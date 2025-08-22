@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Debugger</title>
+    <style>
+        :root {
+            --primary: #0F9E99;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --dark: #262424;
+            --light: #EFE9E0;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #ddd;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f5f8fa;
+            color: var(--text-color);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 8px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        .status-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .status-item {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .status-ok {
+            background-color: #e8f5e9;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .status-error {
+            background-color: #ffebee;
+            border-left: 4px solid var(--danger);
+        }
+
+        .status-warning {
+            background-color: #fff8e1;
+            border-left: 4px solid var(--warning);
+        }
+
+        .status-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .status-value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .error {
+            color: var(--danger);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .success {
+            color: var(--secondary);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        textarea {
+            min-height: 100px;
+            font-family: monospace;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0d8c87;
+        }
+
+        .test-section {
+            margin-top: 30px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .tab-container {
+            margin-top: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+
+        .tab.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-top: 10px;
+            font-family: monospace;
+        }
+
+        .instructions {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #0F9E99;
+        }
+
+        .response-container {
+            margin-top: 20px;
+        }
+
+        .response-status {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .status-200 {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-401 {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .token-display {
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 12px;
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>API Connection Debugger</h1>
+            <p>Diagnose and fix API authentication issues</p>
+        </header>
+
+        <div class="instructions">
+            <h3>Debugging Instructions</h3>
+            <p>Based on your test results, you're experiencing authentication issues (401 errors). Use this tool to test your login endpoint, obtain a JWT token, and then test other endpoints with the token.</p>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Current API Status</h2>
+            
+            <div class="status-container">
+                <div class="status-item status-warning">
+                    <div class="status-title">/api/auth/login</div>
+                    <div class="status-value">Authentication Required</div>
+                    <div>Returns 401 with invalid credentials</div>
+                </div>
+                
+                <div class="status-item status-error">
+                    <div class="status-title">/api/computers</div>
+                    <div class="status-value">401 Unauthorized</div>
+                    <div>Needs valid JWT token</div>
+                </div>
+                
+                <div class="status-item status-error">
+                    <div class="status-title">/api/bookings</div>
+                    <div class="status-value">401 Unauthorized</div>
+                    <div>Needs valid JWT token</div>
+                </div>
+                
+                <div class="status-item status-error">
+                    <div class="status-title">/api/issues</div>
+                    <div class="status-value">401 Unauthorized</div>
+                    <div>Needs valid JWT token</div>
+                </div>
+                
+                <div class="status-item status-warning">
+                    <div class="status-title">/api/reports</div>
+                    <div class="status-value">200 OK</div>
+                    <div>Not returning JSON format</div>
+                </div>
+                
+                <div class="status-item status-error">
+                    <div class="status-title">/api/users</div>
+                    <div class="status-value">401 Unauthorized</div>
+                    <div>Needs valid JWT token</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-container">
+            <div class="tabs">
+                <div class="tab active" data-tab="auth-test">Authentication Test</div>
+                <div class="tab" data-tab="api-test">API Test with Token</div>
+                <div class="tab" data-tab="solutions">Solutions</div>
+            </div>
+
+            <div class="tab-content active" id="auth-test-tab">
+                <div class="card">
+                    <h2 class="card-title">Test Authentication Endpoint</h2>
+                    
+                    <div class="form-group">
+                        <label for="authEndpoint">Authentication Endpoint:</label>
+                        <input type="text" id="authEndpoint" value="/api/auth/login" placeholder="Enter authentication endpoint">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" value="admin" placeholder="Enter username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" value="admin123" placeholder="Enter password">
+                    </div>
+                    
+                    <button id="testAuthBtn">Test Authentication</button>
+                    
+                    <div id="authResult" class="hidden test-section">
+                        <h3>Authentication Response:</h3>
+                        <div class="response-status" id="authStatusCode">N/A</div>
+                        <pre id="authResponse"></pre>
+                        
+                        <div id="tokenSection" class="hidden">
+                            <h3>JWT Token:</h3>
+                            <div class="token-display" id="jwtToken"></div>
+                            <button id="useTokenBtn">Use This Token for API Tests</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="api-test-tab">
+                <div class="card">
+                    <h2 class="card-title">Test API Endpoints with Token</h2>
+                    
+                    <div class="form-group">
+                        <label for="apiEndpoint">API Endpoint:</label>
+                        <select id="apiEndpoint">
+                            <option value="/api/computers">/api/computers</option>
+                            <option value="/api/bookings">/api/bookings</option>
+                            <option value="/api/issues">/api/issues</option>
+                            <option value="/api/users">/api/users</option>
+                            <option value="/api/reports">/api/reports</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="apiMethod">HTTP Method:</label>
+                        <select id="apiMethod">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="apiToken">JWT Token:</label>
+                        <textarea id="apiToken" placeholder="Paste JWT token here"></textarea>
+                    </div>
+                    
+                    <button id="testApiBtn">Test API Endpoint</button>
+                    
+                    <div id="apiResult" class="hidden test-section">
+                        <h3>API Response:</h3>
+                        <div class="response-status" id="apiStatusCode">N/A</div>
+                        <pre id="apiResponse"></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="solutions-tab">
+                <div class="card">
+                    <h2 class="card-title">Solutions to Authentication Issues</h2>
+                    
+                    <h3>1. Fixing Authentication Problems</h3>
+                    <p>Your login endpoint is working but returning 401. This could be due to:</p>
+                    <ul>
+                        <li>Incorrect username/password combination</li>
+                        <li>User not existing in the database</li>
+                        <li>Password hashing mismatch</li>
+                    </ul>
+                    
+                    <h3>2. Check Your User Database</h3>
+                    <p>Verify that the user exists and the password is correct:</p>
+                    <pre>
+// Check if user exists in database
+const user = await User.findOne({ username: req.body.username });
+if (!user) {
+  return res.status(401).json({ message: 'Invalid username or password' });
+}
+
+// Verify password
+const isValidPassword = await bcrypt.compare(req.body.password, user.password);
+if (!isValidPassword) {
+  return res.status(401).json({ message: 'Invalid username or password' });
+}
+
+// Generate JWT token
+const token = jwt.sign(
+  { userId: user._id, username: user.username },
+  process.env.JWT_SECRET,
+  { expiresIn: '24h' }
+);
+
+res.json({ token, user: { id: user._id, username: user.username } });
+                    </pre>
+                    
+                    <h3>3. Proper Token Handling in Frontend</h3>
+                    <p>After successful authentication, store the token and use it in subsequent requests:</p>
+                    <pre>
+// After successful login
+const login = async (credentials) => {
+  const response = await fetch('/api/auth/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(credentials)
+  });
+  
+  if (response.ok) {
+    const data = await response.json();
+    // Store token in localStorage
+    localStorage.setItem('authToken', data.token);
+    return data;
+  } else {
+    throw new Error('Login failed');
+  }
+};
+
+// Using the token in API requests
+const fetchWithToken = async (url, options = {}) => {
+  const token = localStorage.getItem('authToken');
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  const response = await fetch(url, {
+    ...options,
+    headers
+  });
+  
+  return response;
+};
+                    </pre>
+                    
+                    <h3>4. Backend Token Verification</h3>
+                    <p>Ensure your backend properly verifies JWT tokens:</p>
+                    <pre>
+// Authentication middleware
+const auth = async (req, res, next) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid token.' });
+  }
+};
+
+// Protected route
+app.get('/api/computers', auth, async (req, res) => {
+  try {
+    const computers = await Computer.find();
+    res.json(computers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+            });
+        });
+
+        // Authentication test functionality
+        document.getElementById('testAuthBtn').addEventListener('click', async () => {
+            const endpoint = document.getElementById('authEndpoint').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const resultElement = document.getElementById('authResponse');
+            const statusElement = document.getElementById('authStatusCode');
+            const authResult = document.getElementById('authResult');
+            const tokenSection = document.getElementById('tokenSection');
+            const jwtTokenElement = document.getElementById('jwtToken');
+            
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const text = await response.text();
+                
+                // Update status
+                statusElement.textContent = `${response.status} ${response.statusText}`;
+                statusElement.className = `response-status status-${response.status}`;
+                
+                // Try to parse as JSON, otherwise show raw text
+                try {
+                    const json = JSON.parse(text);
+                    resultElement.textContent = JSON.stringify(json, null, 2);
+                    
+                    // If we got a token, show it
+                    if (json.token) {
+                        jwtTokenElement.textContent = json.token;
+                        tokenSection.classList.remove('hidden');
+                    } else {
+                        tokenSection.classList.add('hidden');
+                    }
+                } catch {
+                    resultElement.textContent = text;
+                    tokenSection.classList.add('hidden');
+                }
+                
+                authResult.classList.remove('hidden');
+            } catch (error) {
+                statusElement.textContent = 'Error';
+                statusElement.className = 'response-status status-error';
+                resultElement.textContent = `Error: ${error.message}`;
+                authResult.classList.remove('hidden');
+                tokenSection.classList.add('hidden');
+            }
+        });
+
+        // Use token button
+        document.getElementById('useTokenBtn').addEventListener('click', () => {
+            const token = document.getElementById('jwtToken').textContent;
+            document.getElementById('apiToken').value = token;
+            
+            // Switch to API test tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            document.querySelector('[data-tab="api-test"]').classList.add('active');
+            document.getElementById('api-test-tab').classList.add('active');
+        });
+
+        // API test functionality
+        document.getElementById('testApiBtn').addEventListener('click', async () => {
+            const endpoint = document.getElementById('apiEndpoint').value;
+            const method = document.getElementById('apiMethod').value;
+            const token = document.getElementById('apiToken').value;
+            const resultElement = document.getElementById('apiResponse');
+            const statusElement = document.getElementById('apiStatusCode');
+            const apiResult = document.getElementById('apiResult');
+            
+            try {
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+                
+                const response = await fetch(endpoint, {
+                    method: method,
+                    headers: headers
+                });
+                
+                const text = await response.text();
+                
+                // Update status
+                statusElement.textContent = `${response.status} ${response.statusText}`;
+                statusElement.className = `response-status status-${response.status}`;
+                
+                // Try to parse as JSON, otherwise show raw text
+                try {
+                    const json = JSON.parse(text);
+                    resultElement.textContent = JSON.stringify(json, null, 2);
+                } catch {
+                    resultElement.textContent = text;
+                }
+                
+                apiResult.classList.remove('hidden');
+            } catch (error) {
+                statusElement.textContent = 'Error';
+                statusElement.className = 'response-status status-error';
+                resultElement.textContent = `Error: ${error.message}`;
+                apiResult.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

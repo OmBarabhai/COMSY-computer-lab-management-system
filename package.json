@@ -1,0 +1,25 @@
+{
+  "name": "comsy3",
+  "version": "1.0.0",
+  "description": "A full-stack web application designed to streamline the reporting and management of technical issues in computer labs. Built for real-time tracking, role-based access, and offline support within a college campus.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:backend": "node server/server.js",
+    "start:frontend": "live-server public --port=5500 --open=debugger.html",
+    "start": "node server.js",
+    "start:specs": "node system-specs-server.js",
+    "start:websocket": "node websocket-server.js",
+    "start:all": "concurrently \"npm run start:specs\" \"npm run start:websocket\" \"npm run start\"",
+    "dev": "nodemon server.js"
+
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "live-server": "^1.2.2",
+    "nodemon": "^2.0.20"
+  }
+}

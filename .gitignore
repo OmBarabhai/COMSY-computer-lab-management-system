@@ -1,0 +1,64 @@
+# ==========================
+# Node.js dependencies
+# ==========================
+/node_modules
+/server/node_modules
+/public/node_modules
+
+# ==========================
+# Environment variables
+# ==========================
+/server/.env
+/public/.env
+.env.local
+.env.*.local
+
+# ==========================
+# Logs
+# ==========================
+/server/logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==========================
+# Runtime data
+# ==========================
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# ==========================
+# Build / Output directories
+# ==========================
+/server/dist
+/public/dist
+/build
+/public/assets
+
+# ==========================
+# Coverage for tests
+# ==========================
+/server/coverage
+/public/coverage
+
+# ==========================
+# VS Code & IDEs
+# ==========================
+.vscode/
+.idea/
+
+# ==========================
+# OS files
+# ==========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================
+# Temporary files
+# ==========================
+tmp
+temp
