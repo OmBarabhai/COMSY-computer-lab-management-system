@@ -28,7 +28,6 @@
 
 ## Demo & Screenshots
 
-> Tip: Add a short demo GIF (5–10s) showing a student reporting an issue and admin resolving it — place it at the top for maximum impact.
 
 ### Screenshots
 
