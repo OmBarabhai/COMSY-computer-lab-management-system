@@ -137,7 +137,7 @@
 
 **Frontend**
 
-- HTML5, CSS3, JavaScript (vanilla) — simple modular UI (or optionally React)
+- HTML5, CSS3, JavaScript (vanilla) - simple modular UI (or optionally React)
 
 **Backend**
 
