@@ -1,4 +1,4 @@
-# 🖥️ Comsy – Computer Lab Management System
+# 🖥️ Comsy - Computer Lab Management System
 
 **Comsy** is a full‑stack web application built to streamline the reporting, tracking, and management of technical issues inside college computer labs. It focuses on role‑based access, real‑time updates, and an offline LAN mode via Electron so labs remain functional without internet.
 
