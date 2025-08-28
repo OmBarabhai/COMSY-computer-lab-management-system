@@ -330,7 +330,7 @@ This project is licensed under the **MIT License** — see `LICENSE` for details
 
 ## Contact
 
-Your Name — \[[om.r.barabhai@email.com](mailto:om.r.barabhai@email.com)]
+Om Barabhai— \[[om.r.barabhai@email.com](mailto:om.r.barabhai@email.com)]
 
 Project Link: [`https://github.com/OmBarabhai/COMSY-Computer-Lab-Management-System`]
 
