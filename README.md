@@ -264,7 +264,7 @@ npm run start     # runs electron app for LAN mode
 
 ## API Summary (examples)
 
-> These are sample endpoints — adapt to your routes.
+> These are sample endpoints - adapt to your routes.
 
 **Auth**
 
@@ -311,7 +311,7 @@ Add basic tests and a GitHub Actions workflow in `.github/workflows/ci.yml` to r
 
 ## Contributing
 
-Contributions are welcome — please follow these steps:
+Contributions are welcome - please follow these steps:
 
 1. Fork the repo
 2. Create a feature branch: `git checkout -b feat/your-feature`
@@ -324,13 +324,13 @@ Include meaningful commit messages and keep PRs focused.
 
 ## License
 
-This project is licensed under the **MIT License** — see `LICENSE` for details.
+This project is licensed under the **MIT License** - see `LICENSE` for details.
 
 ---
 
 ## Contact
 
-Om Barabhai— \[[om.r.barabhai@email.com](mailto:om.r.barabhai@email.com)]
+Om Barabhai - \[[om.r.barabhai@email.com](mailto:om.r.barabhai@email.com)]
 
 Project Link: [`https://github.com/OmBarabhai/COMSY-Computer-Lab-Management-System`]
 
